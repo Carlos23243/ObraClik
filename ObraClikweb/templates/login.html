@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ObraClick - Inicio de Sesión</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
+</head>
+<body class="bg-light d-flex flex-column min-vh-100">
+  
+  <!-- =====================================================
+  BARRA DE NAVEGACIÓN
+  ====================================================== -->
+  <nav class="navbar navbar-expand-lg navbar-dark bg-dark py-2">
+    <div class="container">
+      <a class="navbar-brand d-flex align-items-center gap-2" href="{{ url_for('index') }}">
+        <img src="{{ url_for('static', filename='img/ObraClick Logo.png') }}" alt="ObraClick Logo" height="35" class="bg-transparent">
+      </a>
+      <div class="ms-auto d-flex gap-3">
+        <a class="nav-link text-white text-uppercase fs-7 fw-semibold" href="{{ url_for('index') }}">INICIO</a>
+        <a class="nav-link text-white text-uppercase fs-7 fw-semibold" href="{{ url_for('index') }}#nosotros">NOSOTROS</a>
+        <a class="nav-link text-white text-uppercase fs-7 fw-semibold" href="{{ url_for('index') }}#servicios">SERVICIOS</a>
+      </div>
+    </div>
+  </nav>
+
+  <!-- =====================================================
+  CONTENIDO PRINCIPAL
+  ====================================================== -->
+  <main class="container my-auto py-5">
+    <h2 class="text-center fw-bold text-uppercase mb-4">INICIO DE SESIÓN</h2>
+    <div class="row justify-content-center">
+      <div class="col-12 col-md-10 col-lg-8">
+        <div class="card border-0 shadow-sm overflow-hidden rounded-3">
+          <div class="row g-0">
+            
+            <!-- =================================================
+            PANEL IZQUIERDO: FORMULARIO LOGIN
+            ================================================== -->
+            <div class="col-md-7 p-4 p-md-5 bg-dark text-white d-flex flex-column justify-content-center align-items-center">
+              
+              <!-- LOGO -->
+              <div class="text-center mb-4">
+                <img src="{{ url_for('static', filename='img/ObraClick Logo.png') }}" alt="ObraClick Logo" height="50" class="img-fluid mb-2">
+              </div>
+
+              <!-- ALERTA DINÁMICA -->
+              <div id="loginAlert" class="d-none w-100 mb-3"></div>
+              
+              <!-- FORMULARIO CONECTADO A APP.PY Y LOGIN.JS -->
+              <form action="{{ url_for('login') }}" method="POST" id="loginForm" class="w-100" novalidate>
+                <!-- USUARIO / CORREO -->
+                <div class="mb-3">
+                  <label for="usuario" class="form-label text-uppercase fw-bold small text-white">USUARIO / CORREO</label>
+                  <input type="text" class="form-control form-control-lg border-0 shadow-sm bg-secondary text-white" id="usuario" name="usuario" placeholder="Ingrese su usuario" required>
+                  <div class="invalid-feedback text-warning small">Ingrese su usuario o correo electrónico.</div>
+                </div>
+                
+                <!-- CONTRASEÑA CON BOTÓN DE VISIBILIDAD -->
+                <div class="mb-4">
+                  <label for="password" class="form-label text-uppercase fw-bold small text-white">CONTRASEÑA</label>
+                  <div class="input-group">
+                    <input type="password" class="form-control form-control-lg border-0 shadow-sm bg-secondary text-white" id="password" name="password" placeholder="Ingrese su contraseña" required>
+                    <button class="btn btn-outline-light" type="button" id="togglePassword">
+                      <i class="fa-solid fa-eye"></i>
+                    </button>
+                  </div>
+                  <div class="invalid-feedback text-warning small">La contraseña debe tener al menos 4 caracteres.</div>
+                </div>
+                
+                <!-- BOTÓN ACCEDER -->
+                <div class="text-center">
+                  <button type="submit" class="btn btn-light rounded-pill px-5 py-2 fw-bold text-uppercase shadow-sm text-dark">
+                    ACCEDER
+                  </button>
+                </div>
+              </form>
+            </div>
+
+            <!-- =================================================
+            PANEL DERECHO: OPCIONES Y REGISTRO
+            ================================================== -->
+            <div class="col-md-5 p-4 p-md-5 bg-light d-flex flex-column justify-content-center align-items-center gap-3 border-start">
+              <a href="{{ url_for('registro') }}" class="btn btn-outline-dark rounded-pill w-100 py-2 text-uppercase fw-semibold btn-sm">CREAR USUARIO</a>
+              <a href="#" class="btn btn-outline-secondary rounded-pill w-100 py-2 text-uppercase fw-semibold btn-sm">OLVIDÉ MI CONTRASEÑA</a>
+              <a href="{{ url_for('login') }}" class="btn btn-dark rounded-pill w-100 py-2 text-uppercase fw-semibold btn-sm mt-2">INGRESAR COMO ESPECIALISTA</a>
+            </div>
+
+          </div>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <!-- =====================================================
+  PIE DE PÁGINA
+  ====================================================== -->
+  <footer class="footer-fiverr py-3 border-top bg-white mt-auto">
+    <div class="container-fluid px-4">
+      <div class="row align-items-center justify-content-between gy-2">
+        <div class="col-12 col-md-auto text-center text-md-start">
+          <span class="text-secondary small fw-medium">&copy; 2026 <strong>ObraClick S.A.S.</strong> | Carlos Arce - <strong>UEA</strong></span>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+  <!-- =====================================================
+  JAVASCRIPT
+  ====================================================== -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+  <script src="{{ url_for('static', filename='js/login.js') }}"></script>
+</body>
+</html>

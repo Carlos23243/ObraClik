@@ -1,0 +1,282 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ObraClick - Mi Perfil</title>
+    <!-- Bootstrap 5 CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- FontAwesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- CSS Personalizado -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
+</head>
+<body class="bg-light d-flex flex-column min-vh-100">
+
+    <!-- NAVEGACIÓN SUPERIOR / NAVBAR -->
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark py-2">
+        <div class="container">
+            <a class="navbar-brand d-flex align-items-center gap-2" href="{{ url_for('index') }}">
+                <img src="{{ url_for('static', filename='img/ObraClick Logo.png') }}" alt="ObraClick Logo" height="35" class="bg-transparent">
+            </a>
+            
+            <div class="ms-auto d-flex align-items-center gap-3">
+                <a class="nav-link text-white text-uppercase fs-7 fw-semibold" href="{{ url_for('index') }}">INICIO</a>
+                <a class="nav-link text-white text-uppercase fs-7 fw-semibold" href="{{ url_for('index') }}#nosotros">NOSOTROS</a>
+                <a class="nav-link text-white text-uppercase fs-7 fw-semibold" href="{{ url_for('index') }}#servicios">SERVICIOS</a>
+                <a class="btn btn-outline-warning btn-sm fw-bold ms-2" href="{{ url_for('logout') }}">
+                    <i class="fa-solid fa-right-from-bracket me-1"></i>SALIR
+                </a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- CONTENIDO PRINCIPAL -->
+    <main class="container py-4 flex-grow-1">
+
+        <!-- MENSAJES FLASH DE FLASK -->
+        {% with messages = get_flashed_messages(with_categories=true) %}
+          {% if messages %}
+            {% for category, message in messages %}
+              <div class="alert alert-{{ category }} alert-dismissible fade show shadow-sm" role="alert">
+                <i class="fa-solid fa-circle-info me-2"></i>{{ message }}
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+              </div>
+            {% endfor %}
+          {% endif %}
+        {% endwith %}
+
+        <!-- TARJETA CABECERA DEL PERFIL (DATOS DESDE MYSQL) -->
+        <div class="card border-0 shadow-sm p-4 mb-4 bg-white rounded-3">
+            <div class="d-flex flex-column flex-md-row align-items-center align-items-md-start gap-4">
+                
+                <!-- AVATAR / INICIAL DEL USUARIO -->
+                <div class="position-relative">
+                    <div class="bg-dark text-warning rounded-circle d-flex align-items-center justify-content-center shadow-sm fw-bold text-uppercase" style="width: 110px; height: 110px; font-size: 3rem;">
+                        {{ (usuario.nombre_razon | default('U'))[0] }}
+                    </div>
+                    <span class="position-absolute bottom-0 end-0 bg-success text-white rounded-circle p-2 fs-6 shadow-sm" title="Usuario Autenticado">
+                        <i class="fa-solid fa-check-double"></i>
+                    </span>
+                </div>
+
+                <!-- INFORMACIÓN PRINCIPAL DEL USUARIO EN SESIÓN -->
+                <div class="text-center text-md-start flex-grow-1">
+                    <h2 class="fw-bold text-uppercase mb-1 text-dark">
+                        {{ usuario.nombre_razon | default('USUARIO') }}
+                    </h2>
+                    
+                    <p class="text-secondary fw-semibold mb-2">
+                        <i class="fa-solid fa-id-card me-1 text-warning"></i>
+                        {{ usuario.tipo_doc | upper }}: {{ usuario.identificacion }}
+                    </p>
+
+                    <div class="d-flex flex-wrap align-items-center justify-content-center justify-content-md-start gap-3 text-muted small mb-3">
+                        <span><i class="fa-solid fa-envelope me-1 text-dark"></i>{{ usuario.email | default('Sin correo registrado') }}</span>
+                        <span><i class="fa-solid fa-phone me-1 text-dark"></i>{{ usuario.telefono | default('Sin teléfono registrado') }}</span>
+                        <span><i class="fa-solid fa-calendar-day me-1 text-dark"></i>Registro: {{ usuario.fecha_registro }}</span>
+                    </div>
+
+                    <!-- BOTONES DE ACCIÓN DEL PERFIL -->
+                    <div class="d-flex flex-wrap gap-2 justify-content-center justify-content-md-start">
+                        <button type="button" class="btn btn-warning fw-bold px-4" data-bs-toggle="modal" data-bs-target="#modalMensaje">
+                            <i class="fa-solid fa-paper-plane me-2"></i>Enviar Mensaje
+                        </button>
+                        <a href="{{ url_for('pedidos') }}" class="btn btn-outline-dark fw-semibold px-4">
+                            <i class="fa-solid fa-list-check me-2"></i>Mis Pedidos
+                        </a>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+
+        <!-- BANDERAS Y PESTAÑAS DENTRO DEL PERFIL -->
+        <div class="row g-4">
+            
+            <!-- COLUMNA IZQUIERDA: HISTORIAL DE MENSAJES GUARDADOS -->
+            <div class="col-12 col-lg-7" id="seccionMensajes">
+                <div class="card border-0 shadow-sm bg-white rounded-3 h-100">
+                    <div class="card-header bg-dark text-white fw-bold py-3 d-flex justify-content-between align-items-center">
+                        <span><i class="fa-solid fa-comments me-2 text-warning"></i>MIS MENSAJES Y NOTIFICACIONES</span>
+                        <span class="badge bg-warning text-dark">{{ mensajes | length }}</span>
+                    </div>
+                    <div class="card-body p-4">
+                        {% if mensajes %}
+                            <div class="list-group list-group-flush">
+                                {% for msg in mensajes %}
+                                    <div class="list-group-item p-3 border rounded mb-2 bg-light">
+                                        <div class="d-flex justify-content-between align-items-center mb-1">
+                                            <h6 class="fw-bold mb-0 text-dark">
+                                                <i class="fa-solid fa-user-circle me-1 text-secondary"></i>
+                                                {{ msg.emisor_nombre | default('Sistema ObraClick') }}
+                                            </h6>
+                                            <small class="text-muted"><i class="fa-regular fa-clock me-1"></i>{{ msg.fecha_envio }}</small>
+                                        </div>
+                                        <p class="text-secondary mb-0 small">{{ msg.contenido }}</p>
+                                    </div>
+                                {% endfor %}
+                            </div>
+                        {% else %}
+                            <div class="text-center py-5">
+                                <i class="fa-solid fa-inbox fa-3x text-muted mb-3"></i>
+                                <p class="text-secondary mb-0 fw-semibold">No tienes mensajes ni notificaciones activas en la base de datos.</p>
+                            </div>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+
+            <!-- COLUMNA DERECHA: DOCUMENTOS Y ESTADO DE REGISTRO -->
+            <div class="col-12 col-lg-5">
+                <div class="card border-0 shadow-sm bg-white rounded-3 mb-4">
+                    <div class="card-header bg-white border-bottom fw-bold text-uppercase py-3">
+                        <i class="fa-solid fa-file-shield me-2 text-warning"></i>DOCUMENTOS DE VERIFICACIÓN
+                    </div>
+                    <div class="card-body p-4">
+                        {% if usuario.antecedentes_filename %}
+                            <div class="d-flex align-items-center justify-content-between p-3 border rounded bg-light">
+                                <div class="d-flex align-items-center gap-2">
+                                    <i class="fa-solid fa-file-pdf fs-3 text-danger"></i>
+                                    <div>
+                                        <span class="fw-bold text-dark d-block small">Antecedentes Cargados</span>
+                                        <small class="text-muted">{{ usuario.antecedentes_filename }}</small>
+                                    </div>
+                                </div>
+                                <a href="{{ url_for('static', filename='uploads/' + usuario.antecedentes_filename) }}" target="_blank" class="btn btn-sm btn-outline-dark">
+                                    <i class="fa-solid fa-eye me-1"></i>Ver
+                                </a>
+                            </div>
+                        {% else %}
+                            <div class="alert alert-secondary mb-0 text-center small">
+                                <i class="fa-solid fa-circle-exclamation me-1"></i> No has adjuntado archivos de antecedentes.
+                            </div>
+                        {% endif %}
+                    </div>
+                </div>
+
+                <!-- ESTADO DE SERVICIOS / PEDIDOS -->
+                <div class="card border-0 shadow-sm bg-white rounded-3">
+                    <div class="card-header bg-white border-bottom fw-bold text-uppercase py-3">
+                        <i class="fa-solid fa-boxes-packing me-2 text-warning"></i>RESUMEN DE SOLICITUDES
+                    </div>
+                    <div class="card-body p-4">
+                        {% if ordenes %}
+                            <div class="list-group list-group-flush">
+                                {% for orden in ordenes %}
+                                    <div class="list-group-item d-flex justify-content-between align-items-center px-0">
+                                        <div>
+                                            <span class="fw-bold d-block text-dark">{{ orden.servicio }}</span>
+                                            <small class="text-muted">{{ orden.fecha_creacion }}</small>
+                                        </div>
+                                        <span class="badge bg-secondary">{{ orden.estado }}</span>
+                                    </div>
+                                {% endfor %}
+                            </div>
+                        {% else %}
+                            <p class="text-muted small text-center mb-0">No registras solicitudes o pedidos recientes.</p>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+
+        </div>
+
+    </main>
+
+    <!-- MODAL DE ENVÍO DE MENSAJE -->
+    <div class="modal fade" id="modalMensaje" tabindex="-1" aria-labelledby="modalMensajeLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered modal-lg">
+            <div class="modal-content border-0 shadow">
+                
+                <div class="modal-header bg-dark text-white py-3">
+                    <div class="d-flex align-items-center gap-3">
+                        <h5 class="modal-title fw-bold mb-0">Enviar Mensaje / Consulta</h5>
+                    </div>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+                </div>
+
+                <form id="formChat" action="{{ url_for('enviar_mensaje') }}" method="POST">
+                    <div class="modal-body p-4 bg-light">
+                        
+                        <div class="alert alert-info py-2 px-3 small d-flex align-items-center gap-2 mb-3">
+                            <i class="fa-solid fa-circle-info"></i>
+                            <span>Tu mensaje quedará guardado en tu panel de control y asociado a tu usuario.</span>
+                        </div>
+
+                        <div class="d-flex flex-wrap gap-2 mb-3" id="sugerencias">
+                            <button type="button" class="btn btn-sm btn-outline-secondary rounded-pill click-sugerencia">
+                                👋 Necesito soporte con un servicio de plomería...
+                            </button>
+                            <button type="button" class="btn btn-sm btn-outline-secondary rounded-pill click-sugerencia">
+                                ⏱️ Solicitud de cotización para obra blanca...
+                            </button>
+                        </div>
+
+                        <div class="position-relative">
+                            <textarea class="form-control pe-5" id="mensajeInput" name="mensaje" rows="4" maxlength="2500" placeholder="Escribe tu consulta o mensaje..." required></textarea>
+                            <span class="position-absolute bottom-0 end-0 p-2 text-muted small" id="contadorCaracteres">0/2500</span>
+                        </div>
+                    </div>
+
+                    <div class="modal-footer bg-white border-top-0 d-flex justify-content-between align-items-center">
+                        <button type="button" class="btn btn-light border text-secondary" data-bs-dismiss="modal">Cancelar</button>
+                        <button type="submit" class="btn btn-success fw-bold px-4">
+                            <i class="fa-solid fa-paper-plane me-1"></i>Enviar Mensaje
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- FOOTER DEL PROYECTO -->
+    <footer class="footer-fiverr py-3 border-top bg-white mt-auto">
+        <div class="container-fluid px-4">
+            <div class="row align-items-center justify-content-between gy-2">
+                <div class="col-12 col-md-auto text-center text-md-start">
+                    <span class="text-secondary small fw-medium">
+                        &copy; 2026 <strong>ObraClick S.A.S.</strong> | Carlos Arce - <strong>UEA</strong>
+                    </span>
+                </div>
+                <div class="col-12 col-md-auto d-flex flex-wrap align-items-center justify-content-center gap-3">
+                    <div class="social-icons d-flex align-items-center gap-3 text-secondary">
+                        <a href="https://tiktok.com" target="_blank" class="text-secondary text-decoration-none"><i class="fa-brands fa-tiktok fs-5"></i></a>
+                        <a href="https://instagram.com" target="_blank" class="text-secondary text-decoration-none"><i class="fa-brands fa-instagram fs-5"></i></a>
+                        <a href="https://facebook.com" target="_blank" class="text-secondary text-decoration-none"><i class="fa-brands fa-facebook-f fs-5"></i></a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Bootstrap 5 JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="{{ url_for('static', filename='js/script.js') }}"></script>
+    
+    <!-- SCRIPT INLINE DE APOYO -->
+    <script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const textarea = document.getElementById('mensajeInput');
+        const contador = document.getElementById('contadorCaracteres');
+        const sugerencias = document.querySelectorAll('.click-sugerencia');
+
+        if (textarea && contador) {
+            textarea.addEventListener('input', function() {
+                contador.textContent = `${textarea.value.length}/2500`;
+            });
+        }
+
+        sugerencias.forEach(button => {
+            button.addEventListener('click', function() {
+                if (textarea) {
+                    textarea.value = this.innerText.trim() + " ";
+                    textarea.focus();
+                    if (contador) contador.textContent = `${textarea.value.length}/2500`;
+                }
+            });
+        });
+    });
+    </script>
+</body>
+</html>

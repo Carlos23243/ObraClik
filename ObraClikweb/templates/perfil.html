@@ -1,0 +1,296 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ObraClick - Perfil Trabajador</title>
+    <!-- Bootstrap 5 CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- FontAwesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- CSS Personalizado -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
+</head>
+<body class="bg-light d-flex flex-column min-vh-100">
+
+    <!-- NAVBAR TIPO DASHBOARD (PERFIL TRABAJADOR) -->
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark py-2 sticky-top shadow-sm">
+        <div class="container-fluid px-4">
+            <a class="navbar-brand d-flex align-items-center gap-2" href="{{ url_for('perfil') }}">
+                <img src="{{ url_for('static', filename='img/ObraClick logo.png') }}" alt="ObraClick Logo" height="36">
+            </a>
+
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#profileNavbar">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+
+            <div class="collapse navbar-collapse" id="profileNavbar">
+                <!-- Enlaces del wireframe: PERFIL, MI NEGOCIO, CRECIMIENTO -->
+                <ul class="navbar-nav me-auto ms-lg-4 gap-lg-3">
+                    <li class="nav-item">
+                        <a class="nav-link text-white text-uppercase" href="{{ url_for('perfil') }}">PERFIL</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link text-white text-uppercase" href="{{ url_for('crecimiento') }}">CRECIMIENTO</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link text-white text-uppercase text-warning" href="{{ url_for('pedidos') }}">PEDIDOS</a>
+                    </li>
+                </ul>
+
+                <!-- ACCIONES Y PERFIL -->
+            <div class="d-flex align-items-center gap-3 text-white mt-3 mt-lg-0">
+                
+                <!-- DROPDOWN DE BANDEJA DE ENTRADA (INBOX) -->
+                <div class="dropdown">
+                    <a href="#" class="text-white text-decoration-none position-relative dropdown-toggle-no-caret" id="inboxDropdown" data-bs-toggle="dropdown" aria-expanded="false">
+                        <i class="fa-regular fa-envelope fs-5"></i>
+                        {% if unread_count and unread_count > 0 %}
+                            <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger" style="font-size: 0.65rem;">
+                                {{ unread_count }}
+                            </span>
+                        {% endif %}
+                    </a>
+
+                    <!-- MENÚ DESPLEGABLE TIPO FIVERR -->
+                    <div class="dropdown-menu dropdown-menu-end shadow-lg border-0 p-0 rounded-3 mt-2" aria-labelledby="inboxDropdown" style="width: 360px; max-width: 90vw;">
+                        
+                        <!-- CABECERA DE MENSAJES -->
+                        <div class="p-3 border-bottom d-flex align-items-center justify-content-between bg-white rounded-top-3">
+                            <h6 class="fw-bold mb-0 text-dark d-flex align-items-center gap-2">
+                                <i class="fa-regular fa-envelope"></i> Inbox ({{ unread_count | default(0) }})
+                            </h6>
+                        </div>
+
+                        <!-- LISTA DE CONVERSACIONES CON SCROLL -->
+                        <div class="list-group list-group-flush overflow-auto" style="max-height: 380px;">
+                            
+                            {% if chats %}
+                                {% for chat in chats %}
+                                <a href="{{ url_for('perfil') }}#mensaje" class="list-group-item list-group-item-action p-3 border-bottom d-flex gap-3 align-items-center">
+                                    <div class="position-relative flex-shrink-0">
+                                        {% if chat.avatar %}
+                                            <img src="{{ url_for('static', filename='img/' + chat.avatar) }}" class="rounded-circle object-fit-cover" width="48" height="48" alt="{{ chat.nombre }}">
+                                        {% else %}
+                                            <div class="bg-secondary-subtle text-secondary rounded-circle d-flex align-items-center justify-content-center fw-bold" style="width: 48px; height: 48px; font-size: 1.2rem;">
+                                                {{ (chat.nombre | default('J'))[0] }}
+                                            </div>
+                                        {% endif %}
+                                        <span class="position-absolute bottom-0 end-0 p-1 bg-secondary border border-white rounded-circle"></span>
+                                    </div>
+
+                                    <div class="flex-grow-1 overflow-hidden">
+                                        <div class="d-flex justify-content-between align-items-baseline">
+                                            <h6 class="mb-0 fw-bold text-dark text-truncate" style="max-width: 180px;">{{ chat.nombre }}</h6>
+                                        </div>
+                                        <p class="mb-1 text-secondary small text-truncate" style="max-width: 220px;">
+                                            {% if chat.es_mio %}<span class="fw-semibold">Me:</span> {% endif %}{{ chat.ultimo_mensaje }}
+                                        </p>
+                                        <small class="text-muted" style="font-size: 0.75rem;">{{ chat.tiempo }}</small>
+                                    </div>
+                                </a>
+                                {% endfor %}
+                            {% else %}
+                                <!-- Ejemplo Estático (Vista previa como la imagen) -->
+                                <a href="#" class="list-group-item list-group-item-action p-3 border-bottom d-flex gap-3 align-items-center">
+                                    <div class="position-relative flex-shrink-0">
+                                        <div class="bg-secondary-subtle text-secondary rounded-circle d-flex align-items-center justify-content-center fw-bold" style="width: 48px; height: 48px; font-size: 1.2rem;">I</div>
+                                        <span class="position-absolute bottom-0 end-0 p-1 bg-secondary border border-white rounded-circle"></span>
+                                    </div>
+                                    <div class="flex-grow-1 overflow-hidden">
+                                        <h6 class="mb-0 fw-bold text-dark">ingtuliopereira</h6>
+                                        <p class="mb-1 text-secondary small text-truncate">You have a new message.</p>
+                                        <small class="text-muted" style="font-size: 0.75rem;">9 months</small>
+                                    </div>
+                                </a>
+
+                                <a href="#" class="list-group-item list-group-item-action p-3 border-bottom d-flex gap-3 align-items-center">
+                                    <div class="position-relative flex-shrink-0">
+                                        <div class="bg-secondary-subtle text-secondary rounded-circle d-flex align-items-center justify-content-center fw-bold" style="width: 48px; height: 48px; font-size: 1.2rem;">B</div>
+                                        <span class="position-absolute bottom-0 end-0 p-1 bg-secondary border border-white rounded-circle"></span>
+                                    </div>
+                                    <div class="flex-grow-1 overflow-hidden">
+                                        <h6 class="mb-0 fw-bold text-dark">borjamf</h6>
+                                        <p class="mb-1 text-secondary small text-truncate"><span class="fw-semibold">Me:</span> Hola no te preocupes. Necesitaría...</p>
+                                        <small class="text-muted" style="font-size: 0.75rem;">1 year</small>
+                                    </div>
+                                </a>
+                            {% endif %}
+
+                        </div>
+
+                        <!-- PIE DEL DROPDOWN -->
+                        <div class="p-2 bg-light border-top d-flex align-items-center justify-content-between rounded-bottom-3">
+                            <div class="d-flex gap-2 ms-2 text-muted">
+                                <button type="button" class="btn btn-sm btn-link text-secondary p-0" title="Sonido de notificaciones"><i class="fa-solid fa-volume-high"></i></button>
+                                <button type="button" class="btn btn-sm btn-link text-secondary p-0" title="Ajustes de mensajes"><i class="fa-solid fa-gear"></i></button>
+                            </div>
+                            <a href="{{ url_for('perfil') }}#mensaje" class="fw-bold text-primary text-decoration-none small pe-2">
+                                See All in Inbox
+                            </a>
+                        </div>
+
+                    </div>
+                </div>
+
+                <!-- NOTIFICACIONES -->
+                <a href="#" class="text-white text-decoration-none">
+                    <i class="fa-solid fa-bell fs-5"></i>
+                </a>
+
+                <!-- PERFIL DE USUARIO -->
+                <div class="dropdown">
+                    <a href="#" class="d-flex align-items-center text-white text-decoration-none dropdown-toggle" id="avatarDropdown" data-bs-toggle="dropdown" aria-expanded="false">
+                        <i class="fa-solid fa-circle-user fs-3"></i>
+                    </a>
+                    <ul class="dropdown-menu dropdown-menu-end shadow" aria-labelledby="avatarDropdown">
+                        <li><a class="dropdown-item" href="{{ url_for('perfil') }}"><i class="fa-solid fa-user me-2"></i>Mi Perfil</a></li>
+                        <li><a class="dropdown-item" href="{{ url_for('pedidos') }}"><i class="fa-solid fa-briefcase me-2"></i>Mis Pedidos</a></li>
+                        <li><hr class="dropdown-divider"></li>
+                        <li><a class="dropdown-item text-danger" href="{{ url_for('login') }}"><i class="fa-solid fa-right-from-bracket me-2"></i>Cerrar Sesión</a></li>
+                    </ul>
+                </div>
+
+            </div>
+        </div>
+    </div>
+</nav>
+
+    <!-- CONTENIDO PRINCIPAL -->
+    <main class="container py-4 flex-grow-1">
+        
+        <!-- ENCABEZADO DE PERFIL TRABAJADOR -->
+        <div class="bg-white rounded-3 shadow-sm p-4 mb-4 border">
+            <div class="d-flex align-items-center gap-4 flex-wrap">
+                <div class="position-relative">
+                    <i class="fa-solid fa-circle-user text-secondary" style="font-size: 5.5rem;"></i>
+                </div>
+                <div>
+                    <h1 class="h2 fw-bold text-uppercase mb-1">JUAN PEREZ</h1>
+                    <span class="badge bg-warning text-dark fw-bold px-3 py-2 rounded-pill">Especialista Verificado</span>
+                    <p class="text-muted small mt-2 mb-0"><i class="fa-solid fa-location-dot me-1"></i> Quito, Pichincha, Ecuador</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="row g-4">
+            
+            <!-- COLUMNA IZQUIERDA: ÓRDENES Y MENSAJES -->
+            <div class="col-lg-8">
+                
+                <!-- SECCIÓN ÓRDENES -->
+                <div class="bg-white rounded-3 shadow-sm p-4 mb-4 border">
+                    <h5 class="fw-bold text-uppercase border-bottom pb-2 mb-3">ÓRDENES</h5>
+                    <div class="bg-light p-4 rounded text-center border border-dashed">
+                        <i class="fa-solid fa-clipboard-list fa-2x text-muted mb-2"></i>
+                        <p class="text-secondary mb-0">No tienes órdenes activas en este momento.</p>
+                    </div>
+                </div>
+
+                <!-- SECCIÓN MENSAJE -->
+                <div id="mensaje" class="bg-white rounded-3 shadow-sm p-4 border">
+                    <h5 class="fw-bold text-uppercase border-bottom pb-2 mb-3">MENSAJE</h5>
+                    <div class="bg-light p-4 rounded text-center border border-dashed">
+                        <i class="fa-solid fa-comments fa-2x text-muted mb-2"></i>
+                        <p class="text-secondary mb-0">Bandeja de mensajes vacía.</p>
+                    </div>
+                </div>
+
+            </div>
+
+            <!-- COLUMNA DERECHA: PANEL PERFIL Y PERFORMANCE -->
+            <div class="col-lg-4">
+                <div class="bg-white rounded-3 shadow-sm p-4 border">
+                    
+                    <h5 class="fw-bold text-uppercase mb-3">PERFIL</h5>
+                    <p class="small text-secondary mb-2">
+                        Completa tu perfil para obtener mayor visibilidad en las búsquedas.
+                    </p>
+                    
+                    <!-- BARRA DE PROGRESO -->
+                    <div class="progress mb-3" style="height: 12px;">
+                        <div class="progress-bar bg-dark" role="progressbar" style="width: 80%;" aria-valuenow="80" aria-valuemin="0" aria-valuemax="100"></div>
+                    </div>
+
+                    <button class="btn btn-outline-dark btn-sm w-100 fw-bold mb-4 rounded-pill">
+                        COMPLETAR PERFIL
+                    </button>
+
+                    <!-- METRICAS / TRACK YOUR PERFORMANCE -->
+                    <h6 class="fw-bold text-uppercase border-top pt-3 mb-3">Track your performance</h6>
+
+                    <div class="mb-3">
+                        <div class="d-flex justify-content-between text-secondary small">
+                            <span>Rating General</span>
+                        </div>
+                        <div class="p-2 bg-light border rounded fw-bold text-dark">
+                            4.9 / 5.0
+                        </div>
+                    </div>
+
+                    <div class="row g-2 mb-3">
+                        <div class="col-6">
+                            <div class="p-2 bg-light border rounded text-center">
+                                <span class="d-block small text-secondary">Órdenes</span>
+                                <strong class="fs-6">12</strong>
+                            </div>
+                        </div>
+                        <div class="col-6">
+                            <div class="p-2 bg-light border rounded text-center">
+                                <span class="d-block small text-secondary">Ganancias</span>
+                                <strong class="fs-6">$450.00</strong>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="p-3 bg-light rounded border text-center">
+                        <span class="d-block small text-secondary mb-1">Calificación Promedio</span>
+                        <div class="d-flex justify-content-center align-items-center gap-1 text-warning">
+                            <strong class="text-dark fs-5 me-1">4.9</strong>
+                            <i class="fa-solid fa-star"></i>
+                            <i class="fa-solid fa-star"></i>
+                            <i class="fa-solid fa-star"></i>
+                            <i class="fa-solid fa-star"></i>
+                            <i class="fa-solid fa-star-half-stroke"></i>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+
+        </div>
+    </main>
+
+    <!-- FOOTER -->
+    <footer class="footer-fiverr py-3 border-top bg-white">
+        <div class="container-fluid px-4">
+            <div class="row align-items-center justify-content-between gy-2">
+                <div class="col-12 col-md-auto text-center text-md-start">
+                    <span class="text-secondary small fw-medium">
+                        &copy; 2026 <strong>ObraClick S.A.S.</strong> | Carlos Arce - <strong>UEA</strong>
+                    </span>
+                </div>
+                <div class="col-12 col-md-auto d-flex flex-wrap align-items-center justify-content-center gap-3">
+                    <div class="social-icons d-flex align-items-center gap-3 text-secondary">
+                        <a href="https://tiktok.com" target="_blank" class="text-secondary text-decoration-none hover-icon"><i class="fa-brands fa-tiktok fs-5"></i></a>
+                        <a href="https://instagram.com" target="_blank" class="text-secondary text-decoration-none hover-icon"><i class="fa-brands fa-instagram fs-5"></i></a>
+                        <a href="https://linkedin.com" target="_blank" class="text-secondary text-decoration-none hover-icon"><i class="fa-brands fa-linkedin-in fs-5"></i></a>
+                        <a href="https://facebook.com" target="_blank" class="text-secondary text-decoration-none hover-icon"><i class="fa-brands fa-facebook-f fs-5"></i></a>
+                    </div>
+                    <div class="d-flex align-items-center gap-3 ms-md-2 ps-md-3 border-start-md text-secondary small fw-semibold">
+                        <a href="#" class="text-secondary text-decoration-none d-flex align-items-center gap-1 hover-link">
+                            <i class="fa-solid fa-globe fs-6"></i> Español
+                        </a>
+                        <a href="#" class="text-secondary text-decoration-none hover-link">$ USD</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+
+    <!-- Bootstrap 5 JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="{{ url_for('static', filename='js/script.js') }}"></script>
+</body>
+</html>

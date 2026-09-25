@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ObraClick - Registro de Usuario</title>
+  
+  <!-- Bootstrap 5 CSS -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+  <!-- FontAwesome Icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <!-- CSS Personalizado -->
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
+</head>
+
+<body class="bg-light d-flex flex-column min-vh-100">
+
+  <!-- =====================================================
+       BARRA DE NAVEGACIÓN
+  ====================================================== -->
+  <nav class="navbar navbar-expand-lg navbar-dark bg-dark py-2">
+    <div class="container">
+      <a class="navbar-brand d-flex align-items-center gap-2" href="{{ url_for('index') }}">
+        <img src="{{ url_for('static', filename='img/ObraClick Logo.png') }}" alt="ObraClick Logo" height="35" class="bg-transparent">
+      </a>
+
+      <div class="ms-auto d-flex gap-3">
+        <a class="nav-link text-white text-uppercase fs-7 fw-semibold" href="{{ url_for('index') }}">INICIO</a>
+        <a class="nav-link text-white text-uppercase fs-7 fw-semibold" href="{{ url_for('index') }}#nosotros">NOSOTROS</a>
+        <a class="nav-link text-white text-uppercase fs-7 fw-semibold" href="{{ url_for('index') }}#servicios">SERVICIOS</a>
+        <a class="nav-link text-warning text-uppercase fs-7 fw-semibold ms-2" href="{{ url_for('login') }}">INICIAR SESIÓN</a>
+      </div>
+    </div>
+  </nav>
+
+  <!-- =====================================================
+       CONTENIDO PRINCIPAL: CREACIÓN DE USUARIO
+  ====================================================== -->
+  <main class="container my-auto py-5">
+    <h2 class="text-center fw-bold text-uppercase mb-4 text-dark">
+      CREACIÓN DE USUARIO
+    </h2>
+
+    <div class="row justify-content-center">
+      <div class="col-12 col-md-10 col-lg-8">
+        <div class="card border-0 shadow-lg overflow-hidden rounded-3">
+          <div class="row g-0">
+
+            <!-- =================================================
+                 PANEL IZQUIERDO (FORMULARIO NEGRO PROFESIONAL)
+            ================================================== -->
+            <div class="col-md-7 p-4 p-md-5 bg-dark text-white d-flex flex-column justify-content-center align-items-center">
+
+              <!-- LOGO EN LA PARTE SUPERIOR DEL FORMULARIO -->
+              <div class="text-center mb-4">
+                <img src="{{ url_for('static', filename='img/ObraClick Logo.png') }}" alt="ObraClick Logo" height="45" class="img-fluid mb-2">
+              </div>
+
+              <!-- CONTENEDOR DE ALERTAS JS Y FLASH -->
+              <div id="registroAlert" class="d-none w-100 mb-3"></div>
+
+              {% with messages = get_flashed_messages(with_categories=true) %}
+                {% if messages %}
+                  {% for category, message in messages %}
+                    <div class="alert alert-{{ category }} alert-dismissible fade show w-100 mb-3" role="alert">
+                      {{ message }}
+                      <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                    </div>
+                  {% endfor %}
+                {% endif %}
+              {% endwith %}
+
+              <!-- FORMULARIO DE REGISTRO -->
+              <form action="{{ url_for('registro') }}" method="POST" id="registroForm" class="w-100" enctype="multipart/form-data" novalidate>
+
+                <!-- Fila 1: Tipo Documento y Número Identificación -->
+                <div class="row g-3 mb-3">
+                  <div class="col-md-5">
+                    <label for="tipo_doc" class="form-label text-uppercase fw-bold small text-white">TIPO DOC.</label>
+                    <select class="form-select form-select-lg border-0 shadow-sm bg-secondary text-white" id="tipo_doc" name="tipo_doc" required>
+                      <option value="CÉDULA" selected>CÉDULA</option>
+                      <option value="RUC">RUC</option>
+                      <option value="PASAPORTE">PASAPORTE</option>
+                    </select>
+                  </div>
+                  <div class="col-md-7">
+                    <label for="identificacion" class="form-label text-uppercase fw-bold small text-white">IDENTIFICACIÓN No.</label>
+                    <input type="text" class="form-control form-control-lg border-0 shadow-sm bg-secondary text-white" id="identificacion" name="identificacion" placeholder="Ingrese número de documento" required>
+                  </div>
+                </div>
+
+                <!-- Fila 2: Nombre / Razón Social -->
+                <div class="mb-3">
+                  <label for="nombre_razon" class="form-label text-uppercase fw-bold small text-white">NOMBRE / RAZÓN SOCIAL</label>
+                  <input type="text" class="form-control form-control-lg border-0 shadow-sm bg-secondary text-white" id="nombre_razon" name="nombre_razon" placeholder="Ingrese nombres o Razón Social" required>
+                </div>
+
+                <!-- Fila 3: Correo Electrónico y Teléfono -->
+                <div class="row g-3 mb-3">
+                  <div class="col-md-7">
+                    <label for="email" class="form-label text-uppercase fw-bold small text-white">CORREO ELECTRÓNICO</label>
+                    <input type="email" class="form-control form-control-lg border-0 shadow-sm bg-secondary text-white" id="email" name="email" placeholder="ejemplo@correo.com" required>
+                  </div>
+                  <div class="col-md-5">
+                    <label for="telefono" class="form-label text-uppercase fw-bold small text-white">TELÉFONO</label>
+                    <input type="tel" class="form-control form-control-lg border-0 shadow-sm bg-secondary text-white" id="telefono" name="telefono" placeholder="Ej: 0991234567" required>
+                  </div>
+                </div>
+
+                <!-- Fila 4: Contraseña y Confirmación -->
+                <div class="row g-3 mb-3">
+                  <div class="col-md-6">
+                    <label for="password" class="form-label text-uppercase fw-bold small text-white">CONTRASEÑA</label>
+                    <input type="password" class="form-control form-control-lg border-0 shadow-sm bg-secondary text-white" id="password" name="password" placeholder="Mínimo 6 caracteres" minlength="6" required>
+                  </div>
+                  <div class="col-md-6">
+                    <label for="confirmPassword" class="form-label text-uppercase fw-bold small text-white">CONFIRMAR</label>
+                    <input type="password" class="form-control form-control-lg border-0 shadow-sm bg-secondary text-white" id="confirmPassword" name="confirmPassword" placeholder="Repita la contraseña" required>
+                  </div>
+                </div>
+
+                <!-- Fila 5: Antecedentes (Certificado en PDF/Imagen) -->
+                <div class="mb-4">
+                  <label for="antecedentes" class="form-label text-uppercase fw-bold small text-white">ANTECEDENTES (PDF / Imagen)</label>
+                  <input type="file" class="form-control form-control-lg border-0 shadow-sm bg-secondary text-white" id="antecedentes" name="antecedentes" accept=".pdf,.jpg,.jpeg,.png">
+                  <div class="form-text text-light small">Archivos permitidos: PDF, JPG, PNG (Máx. 16MB).</div>
+                </div>
+
+                <!-- BOTÓN SUBMIT -->
+                <div class="text-center">
+                  <button type="submit" id="btnRegistro" class="btn btn-light rounded-pill px-5 py-2 fw-bold text-uppercase shadow-sm text-dark">
+                    REGISTRARSE
+                  </button>
+                </div>
+
+              </form>
+            </div>
+
+            <!-- =================================================
+                 PANEL DERECHO (ACCESOS RÁPIDOS)
+            ================================================== -->
+            <div class="col-md-5 p-4 p-md-5 bg-light d-flex flex-column justify-content-center align-items-center gap-3 border-start">
+              <span class="text-muted text-uppercase fw-semibold small text-center mb-2">
+                ¿YA TIENES UNA CUENTA REGISTRADA?
+              </span>
+
+              <a href="{{ url_for('login') }}" class="btn btn-outline-dark rounded-pill w-100 py-2 text-uppercase fw-semibold btn-sm text-center">
+                INICIAR SESIÓN
+              </a>
+
+              <a href="#" class="btn btn-outline-secondary rounded-pill w-100 py-2 text-uppercase fw-semibold btn-sm text-center">
+                OLVIDÉ MI CONTRASEÑA
+              </a>
+
+              <a href="{{ url_for('login') }}" class="btn btn-dark rounded-pill w-100 py-2 text-uppercase fw-semibold btn-sm mt-2 text-center">
+                INGRESAR COMO ESPECIALISTA
+              </a>
+            </div>
+
+          </div>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <!-- =====================================================
+       PIE DE PÁGINA
+  ====================================================== -->
+  <footer class="footer-fiverr py-3 border-top bg-white mt-auto">
+    <div class="container-fluid px-4">
+      <div class="row align-items-center justify-content-between gy-2">
+        <div class="col-12 col-md-auto text-center text-md-start">
+          <span class="text-secondary small fw-medium">
+            &copy; 2026 <strong>ObraClick S.A.S.</strong> | Carlos Arce - <strong>UEA</strong>
+          </span>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+  <!-- =====================================================
+       JAVASCRIPT
+  ====================================================== -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+  <script src="{{ url_for('static', filename='js/script.js') }}"></script>
+</body>
+
+</html>

@@ -1,0 +1,313 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ObraClick - Gestión de Pedidos</title>
+    <!-- Bootstrap 5 CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- FontAwesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- CSS Personalizado -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
+</head>
+<body class="bg-light d-flex flex-column min-vh-100">
+
+    <!-- NAVBAR TIPO DASHBOARD -->
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark py-2 sticky-top shadow-sm">
+        <div class="container-fluid px-4">
+            <a class="navbar-brand d-flex align-items-center gap-2" href="{{ url_for('perfil') }}">
+                <img src="{{ url_for('static', filename='img/ObraClick Logo.png') }}" alt="ObraClick Logo" height="36">
+            </a>
+
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#profileNavbar">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+
+            <div class="collapse navbar-collapse" id="profileNavbar">
+                <!-- NAVEGACIÓN PRINCIPAL -->
+                <ul class="navbar-nav me-auto ms-lg-4 gap-lg-3">
+                    <li class="nav-item">
+                        <a class="nav-link text-white text-uppercase" href="{{ url_for('perfil') }}">PERFIL</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link text-white text-uppercase text-warning fw-bold" href="{{ url_for('pedidos') }}">PEDIDOS</a>
+                    </li>
+                </ul>
+
+                <!-- ACCIONES Y USUARIO EN SESIÓN -->
+                <div class="d-flex align-items-center gap-3 text-white mt-3 mt-lg-0">
+                    
+                    <!-- DROPDOWN DE BANDEJA DE ENTRADA (INBOX) -->
+                    <div class="dropdown">
+                        <a href="#" class="text-white text-decoration-none position-relative dropdown-toggle-no-caret" id="inboxDropdown" data-bs-toggle="dropdown" aria-expanded="false">
+                            <i class="fa-regular fa-envelope fs-5"></i>
+                            {% if unread_count and unread_count > 0 %}
+                                <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger" style="font-size: 0.65rem;">
+                                    {{ unread_count }}
+                                </span>
+                            {% endif %}
+                        </a>
+
+                        <!-- MENÚ DESPLEGABLE DE MENSAJES -->
+                        <div class="dropdown-menu dropdown-menu-end shadow-lg border-0 p-0 rounded-3 mt-2" aria-labelledby="inboxDropdown" style="width: 360px; max-width: 90vw;">
+                            
+                            <div class="p-3 border-bottom d-flex align-items-center justify-content-between bg-white rounded-top-3">
+                                <h6 class="fw-bold mb-0 text-dark d-flex align-items-center gap-2">
+                                    <i class="fa-regular fa-envelope"></i> Mensajes ({{ unread_count | default(0) }})
+                                </h6>
+                            </div>
+
+                            <div class="list-group list-group-flush overflow-auto" style="max-height: 380px;">
+                                {% if chats %}
+                                    {% for chat in chats %}
+                                    <a href="{{ url_for('perfil') }}#seccionMensajes" class="list-group-item list-group-item-action p-3 border-bottom d-flex gap-3 align-items-center">
+                                        <div class="position-relative flex-shrink-0">
+                                            <div class="bg-secondary-subtle text-secondary rounded-circle d-flex align-items-center justify-content-center fw-bold" style="width: 44px; height: 44px; font-size: 1.1rem;">
+                                                {{ (chat.nombre | default('U'))[0] }}
+                                            </div>
+                                        </div>
+                                        <div class="flex-grow-1 overflow-hidden">
+                                            <h6 class="mb-0 fw-bold text-dark text-truncate">{{ chat.nombre }}</h6>
+                                            <p class="mb-1 text-secondary small text-truncate">{{ chat.ultimo_mensaje }}</p>
+                                            <small class="text-muted" style="font-size: 0.75rem;">{{ chat.tiempo }}</small>
+                                        </div>
+                                    </a>
+                                    {% endfor %}
+                                {% else %}
+                                    <div class="p-4 text-center text-muted small">
+                                        No tienes mensajes nuevos en tu bandeja.
+                                    </div>
+                                {% endif %}
+                            </div>
+
+                            <div class="p-2 bg-light border-top text-center rounded-bottom-3">
+                                <a href="{{ url_for('perfil') }}#seccionMensajes" class="fw-bold text-primary text-decoration-none small">
+                                    Ver todos en mi perfil
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- DROPDOWN PERFIL DE USUARIO -->
+                    <div class="dropdown">
+                        <a href="#" class="d-flex align-items-center text-white text-decoration-none dropdown-toggle gap-2" id="avatarDropdown" data-bs-toggle="dropdown" aria-expanded="false">
+                            <div class="bg-warning text-dark rounded-circle d-flex align-items-center justify-content-center fw-bold text-uppercase" style="width: 36px; height: 36px;">
+                                {{ (usuario.nombre_razon | default('U'))[0] }}
+                            </div>
+                            <span class="d-none d-md-inline small fw-semibold">{{ usuario.nombre_razon | default('Usuario') }}</span>
+                        </a>
+                        <ul class="dropdown-menu dropdown-menu-end shadow border-0" aria-labelledby="avatarDropdown">
+                            <li><a class="dropdown-item" href="{{ url_for('perfil') }}"><i class="fa-solid fa-user me-2 text-warning"></i>Mi Perfil</a></li>
+                            <li><a class="dropdown-item" href="{{ url_for('pedidos') }}"><i class="fa-solid fa-briefcase me-2 text-warning"></i>Mis Pedidos</a></li>
+                            <li><hr class="dropdown-divider"></li>
+                            <li><a class="dropdown-item text-danger" href="{{ url_for('logout') }}"><i class="fa-solid fa-right-from-bracket me-2"></i>Cerrar Sesión</a></li>
+                        </ul>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- CONTENIDO PRINCIPAL: PANEL DE PEDIDOS -->
+    <main class="container-fluid px-4 py-4 flex-grow-1">
+
+        <!-- MENSAJES FLASH DE FLASK -->
+        {% with messages = get_flashed_messages(with_categories=true) %}
+          {% if messages %}
+            {% for category, message in messages %}
+              <div class="alert alert-{{ category }} alert-dismissible fade show shadow-sm mb-4" role="alert">
+                <i class="fa-solid fa-circle-info me-2"></i>{{ message }}
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+              </div>
+            {% endfor %}
+          {% endif %}
+        {% endwith %}
+
+        <!-- VARIABLES DE FILTRADO DINÁMICO DE PEDIDOS DESDE MYSQL -->
+        {% set todos_pedidos = ordenes | default([]) %}
+        {% set pendientes = todos_pedidos | selectattr('estado', 'equalto', 'Pendiente') | list %}
+        {% set activos = todos_pedidos | selectattr('estado', 'equalto', 'Activo') | list %}
+        {% set completados = todos_pedidos | selectattr('estado', 'equalto', 'Completado') | list %}
+        {% set cancelados = todos_pedidos | selectattr('estado', 'equalto', 'Cancelado') | list %}
+
+        <div class="bg-white rounded-3 shadow-sm p-4 border" style="min-height: 500px;">
+            
+            <!-- Encabezado de la Sección -->
+            <div class="d-flex justify-content-between align-items-center mb-4 flex-wrap gap-2">
+                <h2 class="fw-bold text-uppercase mb-0">MIS PEDIDOS Y SOLICITUDES</h2>
+                <span class="badge bg-dark px-3 py-2 fs-6">Total: {{ todos_pedidos | length }}</span>
+            </div>
+
+            <!-- BARRA DE FILTROS (PESTAÑAS) -->
+            <ul class="nav nav-pills gap-2 mb-4" id="pedidosTab" role="tablist">
+                <li class="nav-item" role="presentation">
+                    <button class="nav-link btn btn-outline-secondary rounded-pill btn-sm px-3 active" id="todos-tab" data-bs-toggle="pill" data-bs-target="#todos" type="button" role="tab">Todos ({{ todos_pedidos | length }})</button>
+                </li>
+                <li class="nav-item" role="presentation">
+                    <button class="nav-link btn btn-outline-secondary rounded-pill btn-sm px-3" id="pendiente-tab" data-bs-toggle="pill" data-bs-target="#pendiente" type="button" role="tab">Pendientes ({{ pendientes | length }})</button>
+                </li>
+                <li class="nav-item" role="presentation">
+                    <button class="nav-link btn btn-outline-secondary rounded-pill btn-sm px-3" id="activo-tab" data-bs-toggle="pill" data-bs-target="#activo" type="button" role="tab">Activos ({{ activos | length }})</button>
+                </li>
+                <li class="nav-item" role="presentation">
+                    <button class="nav-link btn btn-outline-secondary rounded-pill btn-sm px-3" id="completado-tab" data-bs-toggle="pill" data-bs-target="#completado" type="button" role="tab">Completados ({{ completados | length }})</button>
+                </li>
+                <li class="nav-item" role="presentation">
+                    <button class="nav-link btn btn-outline-secondary rounded-pill btn-sm px-3" id="cancelado-tab" data-bs-toggle="pill" data-bs-target="#cancelado" type="button" role="tab">Cancelados ({{ cancelados | length }})</button>
+                </li>
+            </ul>
+
+            <!-- CONTENIDO DE LAS PESTAÑAS DE PEDIDOS DESDE LA BD -->
+            <div class="tab-content pt-2" id="pedidosTabContent">
+              
+                <!-- Pestaña 1: Todos los Pedidos -->
+                <div class="tab-pane fade show active" id="todos" role="tabpanel">
+                    {% if todos_pedidos %}
+                        <div class="list-group shadow-sm">
+                            {% for orden in todos_pedidos %}
+                                <div class="list-group-item d-flex justify-content-between align-items-center p-3 border-start border-4 {% if orden.estado == 'Completado' %}border-success{% elif orden.estado == 'Cancelado' %}border-danger{% else %}border-warning{% endif %}">
+                                    <div>
+                                        <h6 class="fw-bold mb-1 text-dark">{{ orden.servicio }}</h6>
+                                        <p class="text-secondary small mb-1">{{ orden.detalles | default('Sin detalles adicionales') }}</p>
+                                        <small class="text-muted"><i class="fa-regular fa-calendar me-1"></i>Fecha: {{ orden.fecha_creacion }}</small>
+                                    </div>
+                                    <div>
+                                        <span class="badge {% if orden.estado == 'Completado' %}bg-success{% elif orden.estado == 'Cancelado' %}bg-danger{% elif orden.estado == 'Activo' %}bg-primary{% else %}bg-warning text-dark{% endif %} px-3 py-2 rounded-pill">
+                                            {{ orden.estado | upper }}
+                                        </span>
+                                    </div>
+                                </div>
+                            {% endfor %}
+                        </div>
+                    {% else %}
+                        <div class="text-center py-5 bg-light rounded border border-dashed">
+                            <i class="fa-solid fa-boxes-packing fa-3x text-muted mb-3"></i>
+                            <p class="text-secondary mb-0 fw-semibold">No registras ningún pedido ni obra asignada en la base de datos.</p>
+                        </div>
+                    {% endif %}
+                </div>
+
+                <!-- Pestaña 2: Pendientes -->
+                <div class="tab-pane fade" id="pendiente" role="tabpanel">
+                    {% if pendientes %}
+                        <div class="list-group shadow-sm">
+                            {% for orden in pendientes %}
+                                <div class="list-group-item d-flex justify-content-between align-items-center p-3 border-start border-warning border-4">
+                                    <div>
+                                        <h6 class="fw-bold mb-1 text-dark">{{ orden.servicio }}</h6>
+                                        <p class="text-secondary small mb-1">{{ orden.detalles }}</p>
+                                        <small class="text-muted">{{ orden.fecha_creacion }}</small>
+                                    </div>
+                                    <span class="badge bg-warning text-dark px-3 py-2 rounded-pill">PENDIENTE</span>
+                                </div>
+                            {% endfor %}
+                        </div>
+                    {% else %}
+                        <div class="text-center py-5 bg-light rounded border border-dashed">
+                            <i class="fa-solid fa-clock fa-3x text-muted mb-3"></i>
+                            <p class="text-secondary mb-0">No tienes pedidos pendientes.</p>
+                        </div>
+                    {% endif %}
+                </div>
+
+                <!-- Pestaña 3: Activos -->
+                <div class="tab-pane fade" id="activo" role="tabpanel">
+                    {% if activos %}
+                        <div class="list-group shadow-sm">
+                            {% for orden in activos %}
+                                <div class="list-group-item d-flex justify-content-between align-items-center p-3 border-start border-primary border-4">
+                                    <div>
+                                        <h6 class="fw-bold mb-1 text-dark">{{ orden.servicio }}</h6>
+                                        <p class="text-secondary small mb-1">{{ orden.detalles }}</p>
+                                        <small class="text-muted">{{ orden.fecha_creacion }}</small>
+                                    </div>
+                                    <span class="badge bg-primary px-3 py-2 rounded-pill">EN PROCESO / ACTIVO</span>
+                                </div>
+                            {% endfor %}
+                        </div>
+                    {% else %}
+                        <div class="text-center py-5 bg-light rounded border border-dashed">
+                            <i class="fa-solid fa-person-digging fa-3x text-muted mb-3"></i>
+                            <p class="text-secondary mb-0">No hay pedidos actualmente en ejecución.</p>
+                        </div>
+                    {% endif %}
+                </div>
+
+                <!-- Pestaña 4: Completados -->
+                <div class="tab-pane fade" id="completado" role="tabpanel">
+                    {% if completados %}
+                        <div class="list-group shadow-sm">
+                            {% for orden in completados %}
+                                <div class="list-group-item d-flex justify-content-between align-items-center p-3 border-start border-success border-4">
+                                    <div>
+                                        <h6 class="fw-bold mb-1 text-dark">{{ orden.servicio }}</h6>
+                                        <p class="text-secondary small mb-1">{{ orden.detalles }}</p>
+                                        <small class="text-muted">{{ orden.fecha_creacion }}</small>
+                                    </div>
+                                    <span class="badge bg-success px-3 py-2 rounded-pill">COMPLETADO</span>
+                                </div>
+                            {% endfor %}
+                        </div>
+                    {% else %}
+                        <div class="text-center py-5 bg-light rounded border border-dashed">
+                            <i class="fa-solid fa-circle-check fa-3x text-muted mb-3"></i>
+                            <p class="text-secondary mb-0">No hay obras registradas como completadas.</p>
+                        </div>
+                    {% endif %}
+                </div>
+
+                <!-- Pestaña 5: Cancelados -->
+                <div class="tab-pane fade" id="cancelado" role="tabpanel">
+                    {% if cancelados %}
+                        <div class="list-group shadow-sm">
+                            {% for orden in cancelados %}
+                                <div class="list-group-item d-flex justify-content-between align-items-center p-3 border-start border-danger border-4">
+                                    <div>
+                                        <h6 class="fw-bold mb-1 text-dark">{{ orden.servicio }}</h6>
+                                        <p class="text-secondary small mb-1">{{ orden.detalles }}</p>
+                                        <small class="text-muted">{{ orden.fecha_creacion }}</small>
+                                    </div>
+                                    <span class="badge bg-danger px-3 py-2 rounded-pill">CANCELADO</span>
+                                </div>
+                            {% endfor %}
+                        </div>
+                    {% else %}
+                        <div class="text-center py-5 bg-light rounded border border-dashed">
+                            <i class="fa-solid fa-circle-xmark fa-3x text-muted mb-3"></i>
+                            <p class="text-secondary mb-0">No registras ningún pedido cancelado.</p>
+                        </div>
+                    {% endif %}
+                </div>
+
+            </div>
+        </div>
+    </main>
+
+    <!-- FOOTER DEL PROYECTO -->
+    <footer class="footer-fiverr py-3 border-top bg-white mt-auto">
+        <div class="container-fluid px-4">
+            <div class="row align-items-center justify-content-between gy-2">
+                <div class="col-12 col-md-auto text-center text-md-start">
+                    <span class="text-secondary small fw-medium">
+                        &copy; 2026 <strong>ObraClick S.A.S.</strong> | Carlos Arce - <strong>UEA</strong>
+                    </span>
+                </div>
+                <div class="col-12 col-md-auto d-flex flex-wrap align-items-center justify-content-center gap-3">
+                    <div class="social-icons d-flex align-items-center gap-3 text-secondary">
+                        <a href="https://tiktok.com" target="_blank" class="text-secondary text-decoration-none"><i class="fa-brands fa-tiktok fs-5"></i></a>
+                        <a href="https://instagram.com" target="_blank" class="text-secondary text-decoration-none"><i class="fa-brands fa-instagram fs-5"></i></a>
+                        <a href="https://facebook.com" target="_blank" class="text-secondary text-decoration-none"><i class="fa-brands fa-facebook-f fs-5"></i></a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Bootstrap 5 JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+    <!-- Script JS del Proyecto -->
+    <script src="{{ url_for('static', filename='js/script.js') }}"></script>
+</body>
+</html>

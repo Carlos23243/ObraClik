@@ -1,0 +1,489 @@
+/* PALETA DE COLORES OBRACLICK */
+:root {
+    --obraclick-primary: #ffc107;   /* Amarillo Seguridad */
+    --obraclick-dark: #121212;      /* Negro Industrial */
+    --obraclick-gray-light: #f8f9fa;/* Gris Claro Fondo */
+    --obraclick-gray-box: #e0e0e0;  /* Gris Wireframe */
+}
+
+body {
+    font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+    background-color: #ffffff;
+    color: var(--obraclick-dark);
+}
+
+/* HERO & NAVEGACIÓN FLOTANTE */
+.hero-container {
+    position: relative;
+    background-color: var(--obraclick-gray-box);
+}
+
+.brand-logo-floating {
+    position: absolute;
+    top: 20px;
+    left: 30px;
+    z-index: 1040;
+    /*background: rgba(18, 18, 18, 0.85);*/
+    padding: 6px 16px;
+    border-radius: 8px;
+    backdrop-filter: blur(4px);
+}
+
+.menu-toggle-floating {
+    position: absolute;
+    top: 20px;
+    right: 30px;
+    z-index: 1040;
+    background-color: var(--obraclick-dark);
+    border: 2px solid var(--obraclick-primary);
+    color: var(--obraclick-primary);
+    border-radius: 12px;
+    padding: 8px 14px;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+    transition: all 0.3s ease;
+}
+
+.menu-toggle-floating:hover {
+    background-color: var(--obraclick-primary);
+    color: var(--obraclick-dark);
+}
+
+/* PANEL DESPLEGABLE DE BÚSQUEDA Y LOGIN */
+.dropdown-panel-floating {
+    position: absolute;
+    top: 70px;
+    right: 30px;
+    z-index: 1050;
+    width: 320px;
+    background-color: var(--obraclick-dark);
+    border-radius: 20px;
+    padding: 16px;
+    box-shadow: 0 8px 24px rgba(0,0,0,0.4);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.dropdown-search-wrapper {
+    position: relative;
+}
+
+.dropdown-search-icon {
+    position: absolute;
+    left: 12px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: #888888;
+    font-size: 0.9rem;
+}
+
+.dropdown-search-input {
+    border-radius: 12px;
+    border: none;
+    padding: 8px 14px 8px 36px;
+    background-color: #ffffff;
+    font-size: 0.9rem;
+}
+
+.btn-dropdown-auth {
+    background-color: #ffffff;
+    color: var(--obraclick-dark);
+    font-weight: 700;
+    border-radius: 12px;
+    border: none;
+    padding: 8px 12px;
+    font-size: 0.8rem;
+    text-transform: uppercase;
+    letter-spacing: 0.3px;
+    transition: all 0.2s ease;
+}
+
+.btn-dropdown-auth:hover {
+    background-color: var(--obraclick-primary);
+    color: var(--obraclick-dark);
+}
+
+.carousel-img {
+    height: 420px;
+    object-fit: cover;
+    filter: brightness(0.80);
+}
+
+/* NAVEGACIÓN INFERIOR */
+.nav-bar-wireframe {
+    background-color: var(--obraclick-dark);
+    border-bottom: 3px solid var(--obraclick-primary);
+}
+
+.nav-bar-wireframe .nav-link {
+    color: #ffffff !important;
+    font-weight: 700;
+    text-transform: uppercase;
+    font-size: 0.9rem;
+    padding: 12px 20px !important;
+}
+
+.nav-bar-wireframe .nav-link:hover,
+.nav-bar-wireframe .nav-link.active {
+    color: var(--obraclick-primary) !important;
+}
+
+/* SECCIONES Y TARJETAS */
+.text-lines {
+    line-height: 1.8;
+    color: #333;
+}
+
+.img-wireframe-placeholder {
+    background-color: var(--obraclick-gray-box);
+    min-height: 280px;
+    border-radius: 6px;
+}
+
+.category-card-img {
+    height: 160px;
+    object-fit: cover;
+}
+
+.btn-wireframe {
+    background-color: var(--obraclick-dark);
+    color: #ffffff;
+    font-weight: 700;
+    border-radius: 20px;
+    padding: 8px 24px;
+    text-transform: uppercase;
+    font-size: 0.85rem;
+    transition: all 0.2s ease;
+}
+
+.btn-wireframe:hover {
+    background-color: var(--obraclick-primary);
+    color: var(--obraclick-dark);
+}
+
+.video-container-box {
+    background-color: var(--obraclick-gray-light);
+    border: 1px solid var(--obraclick-gray-box);
+    padding: 40px 20px;
+    border-radius: 8px;
+}
+
+.social-btn-wireframe {
+    background-color: var(--obraclick-dark);
+    color: #ffffff;
+    font-weight: 700;
+    padding: 10px 28px;
+    border-radius: 8px;
+    text-decoration: none;
+    text-transform: uppercase;
+    font-size: 0.85rem;
+    border-bottom: 3px solid var(--obraclick-primary);
+    transition: all 0.2s ease;
+}
+
+.social-btn-wireframe:hover {
+    background-color: var(--obraclick-primary);
+    color: var(--obraclick-dark);
+}
+
+/* FOOTER */
+.footer-fiverr {
+    font-size: 14px;
+}
+
+.footer-fiverr .hover-icon:hover,
+.footer-fiverr .hover-link:hover {
+    color: var(--obraclick-primary) !important;
+}
+
+@media (min-width: 768px) {
+    .border-start-md {
+        border-left: 1px solid #dee2e6 !important;
+    }
+}
+
+
+
+/* Ajustes para la vista de Inicio de Sesión */
+.fs-7 {
+    font-size: 0.875rem;
+}
+
+#loginForm .form-control {
+    background-color: #f8f9fa;
+    color: #212529;
+}
+
+#loginForm .form-control:focus {
+    background-color: #ffffff;
+    box-shadow: 0 0 0 0.25rem rgba(255, 193, 7, 0.25);
+}
+
+.bg-secondary {
+    background-color: #4a4d50 !important;
+}
+
+
+
+/* ==========================================
+   ESTILOS DE REGISTRO
+   ========================================== */
+
+.auth-card {
+    background: #ffffff;
+    border-radius: 12px;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.08);
+    border: 1px solid #e2e8f0;
+}
+
+.auth-card .form-control, 
+.auth-card .form-select {
+    padding: 0.75rem 1rem;
+    border-radius: 8px;
+    border: 1px solid #cbd5e1;
+    font-size: 0.95rem;
+}
+
+.auth-card .form-control:focus, 
+.auth-card .form-select:focus {
+    border-color: #ffc107;
+    box-shadow: 0 0 0 0.25rem rgba(255, 193, 7, 0.25);
+}
+
+.btn-auth-submit {
+    background-color: #ffc107;
+    color: #000000;
+    font-weight: 700;
+    border-radius: 50px;
+    padding: 0.75rem 1.5rem;
+    border: none;
+    transition: all 0.2s ease-in-out;
+}
+
+.btn-auth-submit:hover {
+    background-color: #e0a800;
+    color: #000000;
+    transform: translateY(-1px);
+}
+
+
+/* ==========================================
+   MÓDULO: SECCIÓN PEDIDOS / MI NEGOCIO
+   ========================================== */
+
+/* Botones de filtro en forma de píldora/cápsula */
+#pedidosTab .nav-link {
+  color: #495057;
+  background-color: #f8f9fa;
+  border: 1px solid #ced4da;
+  font-size: 0.85rem;
+  font-weight: 500;
+  padding: 6px 16px;
+  border-radius: 50rem !important; /* Bordes completamente redondeados */
+  transition: all 0.2s ease-in-out;
+}
+
+/* Estado al pasar el cursor sobre los botones */
+#pedidosTab .nav-link:hover {
+  background-color: #e9ecef;
+  border-color: #adb5bd;
+  color: #212529;
+}
+
+/* Botón de filtro activo */
+#pedidosTab .nav-link.active {
+  background-color: var(--obraclick-dark, #121212) !important;
+  color: #ffffff !important;
+  border-color: var(--obraclick-dark, #121212) !important;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);
+}
+
+/* Contenedor principal del panel de pedidos */
+.pedidos-container {
+  background-color: #ffffff;
+  border-radius: 12px;
+  border: 1px solid #e2e8f0;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+  padding: 1.5rem;
+  min-height: 480px;
+}
+
+/* Borde punteado para los paneles de estado sin información */
+.border-dashed {
+  border: 2px dashed #dee2e6 !important;
+  background-color: #f8f9fa;
+  border-radius: 8px;
+}
+
+/* Ajustes para la barra de navegación del dashboard */
+.navbar-dark .navbar-nav .nav-link.active {
+  color: var(--obraclick-primary, #ffc107) !important;
+}
+
+/* ==========================================
+   MÓDULO: SELECCIÓN PERFILES - USUARIOS
+   ========================================== */
+
+/* Efecto hover suave para las tarjetas de perfiles */
+.hover-shadow {
+  transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
+}
+
+.hover-shadow:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.12) !important;
+}
+
+/* Estilo para simular la altura fija del prototipo en los bloques */
+.min-vh-20 {
+  min-height: 180px;
+}
+
+/* Personalización del input de búsqueda tipo píldora */
+.input-group.rounded-pill input:focus {
+  box-shadow: none;
+  background-color: #e2e8f0 !important;
+}
+
+.input-group.rounded-pill .input-group-text {
+  border-top-left-radius: 50rem !important;
+  border-bottom-left-radius: 50rem !important;
+}
+
+.input-group.rounded-pill input {
+  border-top-right-radius: 50rem !important;
+  border-bottom-right-radius: 50rem !important;
+}
+
+
+
+/* ==========================================================================
+   ESTILOS DE LA PÁGINA NOSOTROS (MÓDULO EDITORIAL / BLOG)
+   ========================================================================== */
+
+/* Fondo oscuro corporativo y color de texto base */
+body.dark-blog-theme {
+    background-color: #1a1d20 !important;
+    color: #e9ecef !important;
+}
+
+/* Forzar que todos los textos, títulos y párrafos dentro del tema sean visibles */
+body.dark-blog-theme h1, 
+body.dark-blog-theme h2, 
+body.dark-blog-theme h3, 
+body.dark-blog-theme h4, 
+body.dark-blog-theme h5, 
+body.dark-blog-theme h6,
+body.dark-blog-theme p,
+body.dark-blog-theme span,
+body.dark-blog-theme div {
+    color: #ffffff !important;
+}
+
+/* Tipografía serif con estilo editorial */
+.text-editorial-title {
+    font-family: 'Playfair Display', Georgia, 'Times New Roman', serif;
+    font-style: italic;
+    font-weight: 700;
+    color: #ffffff !important;
+}
+
+/* Sub-navegación horizontal de categorías */
+.sub-nav-categories {
+    border-bottom: 1px solid rgba(255, 255, 255, 0.15);
+}
+
+.sub-nav-categories .nav-link {
+    color: #ced4da !important;
+    font-size: 0.95rem;
+    padding: 0.5rem 0.8rem;
+    white-space: nowrap;
+    transition: color 0.2s ease-in-out;
+}
+
+.sub-nav-categories .nav-link:hover, 
+.sub-nav-categories .nav-link.active {
+    color: #ffffff !important;
+    font-weight: 600;
+}
+
+/* Tarjeta Hero Principal */
+.hero-blog-card {
+    background-color: #2b3036;
+    border-radius: 8px;
+    padding: 3rem 2.5rem;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+}
+
+/* Tarjetas secundarias de 2 columnas */
+.blog-card-secondary {
+    background-color: #212529;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 6px;
+    overflow: hidden;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.blog-card-secondary:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 6px 18px rgba(0, 0, 0, 0.4);
+}
+
+.w-60 {
+    width: 60%;
+}
+
+.w-40 {
+    width: 40%;
+}
+
+.blog-thumbnail-placeholder {
+    background-color: #5a6268;
+    color: #ffffff !important;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 500;
+    min-height: 160px;
+    height: 100%;
+}
+
+/* Caja 'About' de la barra lateral */
+.sidebar-about-card {
+    background-color: #2b3036;
+    border-radius: 8px;
+    padding: 1.5rem;
+}
+
+/* Miniaturas de post recientes */
+.recent-thumb-box {
+    width: 80px;
+    height: 80px;
+    background-color: #6c757d;
+    flex-shrink: 0;
+}
+
+/* Ajustes de fechas y metadatos secundarios */
+.blog-post-meta, 
+.text-muted {
+    color: #adb5bd !important;
+}
+
+/* ==========================================================================
+   REGLA DE SOBREESCRITURA: TEXTO NEGRO PARA LA SECCIÓN DEL ARTÍCULO
+   ========================================================================== */
+
+.blog-post,
+.blog-post h1,
+.blog-post h2,
+.blog-post h3,
+.blog-post h4,
+.blog-post h5,
+.blog-post h6,
+.blog-post p,
+.blog-post span,
+.blog-post blockquote {
+    color: #000000 !important;
+}
+
+.blog-post .blog-post-meta {
+    color: #555555 !important;
+}
