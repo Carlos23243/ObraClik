@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}ObraClick{% endblock %}</title>
+
+    <!-- Bootstrap 5 CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- FontAwesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,700;1,700&family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <!-- CSS Personalizado -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
+
+    {% block head %}{% endblock %}
+</head>
+<body class="d-flex flex-column min-vh-100 obraclick-theme">
+
+    <!-- ================= NAVBAR ================= -->
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark py-2 sticky-top shadow-sm">
+        <div class="container-fluid px-4">
+
+            <a class="navbar-brand d-flex align-items-center gap-2" href="{{ url_for('index') }}">
+                <img src="{{ url_for('static', filename='img/ObraClick logo.png') }}" alt="ObraClick Logo" height="36">
+            </a>
+
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#userNavbar"
+                    aria-controls="userNavbar" aria-expanded="false" aria-label="Mostrar menú">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+
+            <div class="collapse navbar-collapse" id="userNavbar">
+
+                <ul class="navbar-nav me-auto ms-lg-4 gap-lg-3">
+                    <li class="nav-item">
+                        <a class="nav-link text-white text-uppercase {% if request.endpoint == 'index' %}active fw-bold{% endif %}"
+                           href="{{ url_for('index') }}">Inicio</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link text-white text-uppercase {% if request.endpoint == 'nosotros' %}active fw-bold{% endif %}"
+                           href="{{ url_for('nosotros') }}">Nosotros</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link text-white text-uppercase {% if request.endpoint == 'servicios' %}active fw-bold{% endif %}"
+                           href="{{ url_for('servicios') }}">Servicios</a>
+                    </li>
+                </ul>
+
+                <div class="d-flex gap-2 align-items-center">
+
+                    <!-- CARRITO -->
+                    <a href="{{ url_for('ver_carrito') }}"
+                       class="btn btn-outline-light btn-sm position-relative px-3"
+                       title="Ver carrito">
+                        <i class="fa-solid fa-cart-shopping"></i>
+                        {% if cart_count %}
+                        <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-warning text-dark">
+                            {{ cart_count }}
+                        </span>
+                        {% endif %}
+                    </a>
+
+                    {% if session.get('user_id') %}
+                        <a href="{{ url_for('perfil') }}" class="btn btn-outline-light btn-sm fw-bold px-3">
+                            <i class="fa-solid fa-user me-1"></i> Mi perfil
+                        </a>
+                        <a href="{{ url_for('logout') }}" class="btn btn-warning btn-sm fw-bold px-3 text-dark">
+                            Salir
+                        </a>
+                    {% else %}
+                        <a href="{{ url_for('login') }}" class="btn btn-outline-light btn-sm fw-bold px-3">
+                            Ingresar
+                        </a>
+                        <a href="{{ url_for('registro') }}" class="btn btn-warning btn-sm fw-bold px-3 text-dark">
+                            Inscribirse
+                        </a>
+                    {% endif %}
+
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- ================= MENSAJES FLASH ================= -->
+    {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+        <div class="container mt-3">
+            {% for category, message in messages %}
+            <div class="alert alert-{{ category }} alert-dismissible fade show shadow-sm" role="alert">
+                {{ message }}
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Cerrar"></button>
+            </div>
+            {% endfor %}
+        </div>
+        {% endif %}
+    {% endwith %}
+
+    <!-- ================= CONTENIDO ================= -->
+    <main class="flex-grow-1">
+        {% block content %}{% endblock %}
+    </main>
+
+    <!-- ================= FOOTER ================= -->
+    <footer class="footer-fiverr py-3 border-top bg-white mt-auto">
+        <div class="container-fluid px-4">
+            <div class="row align-items-center justify-content-between gy-2">
+
+                <div class="col-12 col-md-auto text-center text-md-start">
+                    <span class="text-secondary small fw-medium">
+                        &copy; 2026 <strong>ObraClick S.A.S.</strong> | Carlos Arce - <strong>UEA</strong>
+                    </span>
+                </div>
+
+                <div class="col-12 col-md-auto d-flex flex-wrap align-items-center justify-content-center gap-3">
+                    <div class="social-icons d-flex align-items-center gap-3 text-secondary">
+                        <a href="https://tiktok.com" target="_blank" rel="noopener" class="text-secondary text-decoration-none hover-icon">
+                            <i class="fa-brands fa-tiktok fs-5"></i></a>
+                        <a href="https://instagram.com" target="_blank" rel="noopener" class="text-secondary text-decoration-none hover-icon">
+                            <i class="fa-brands fa-instagram fs-5"></i></a>
+                        <a href="https://linkedin.com" target="_blank" rel="noopener" class="text-secondary text-decoration-none hover-icon">
+                            <i class="fa-brands fa-linkedin-in fs-5"></i></a>
+                        <a href="https://facebook.com" target="_blank" rel="noopener" class="text-secondary text-decoration-none hover-icon">
+                            <i class="fa-brands fa-facebook-f fs-5"></i></a>
+                    </div>
+
+                    <div class="d-flex align-items-center gap-3 ms-md-2 ps-md-3 text-secondary small fw-semibold">
+                        <a href="#" class="text-secondary text-decoration-none d-flex align-items-center gap-1 hover-link">
+                            <i class="fa-solid fa-globe fs-6"></i> Español
+                        </a>
+                        <a href="#" class="text-secondary text-decoration-none hover-link">$ USD</a>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </footer>
+
+    <!-- Bootstrap 5 JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="{{ url_for('static', filename='js/script.js') }}"></script>
+
+    {% block scripts %}{% endblock %}
+</body>
+</html>

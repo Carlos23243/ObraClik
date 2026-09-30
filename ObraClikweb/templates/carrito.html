@@ -1,0 +1,204 @@
+{% extends 'base.html' %}
+{% block title %}ObraClick - Carrito{% endblock %}
+
+{% block head %}
+<style>
+    body { background-color: #f7f8fa; }
+    .btn-primary { background-color: #123b5d; border-color: #123b5d; }
+    .btn-primary:hover { background-color: #0d2d46; border-color: #0d2d46; }
+    .btn-outline-primary { color: #123b5d; border-color: #123b5d; }
+    .btn-outline-primary:hover { background-color: #123b5d; border-color: #123b5d; color: #fff; }
+    .badge.bg-primary { background-color: #123b5d !important; }
+    .text-primary { color: #123b5d !important; }
+    .service-icon {
+        width: 55px; height: 55px; border-radius: 14px;
+        background-color: #eaf1f6; color: #123b5d;
+        display: flex; align-items: center; justify-content: center; font-size: 22px;
+    }
+    .cart-item { background-color: #f8f9fa; border: 1px solid #eee; transition: all .25s ease; }
+    .cart-item:hover { background-color: #fff; border-color: #dce3e8; box-shadow: 0 4px 12px rgba(0,0,0,.05); }
+    .payment-total { background-color: #f0f5f8; border: 1px solid #dce7ee; color: #123b5d; }
+    .form-control, .form-select { min-height: 48px; border-radius: 9px; border-color: #d9dee3; }
+    .form-control:focus, .form-select:focus {
+        border-color: #123b5d; box-shadow: 0 0 0 .2rem rgba(18,59,93,.12);
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+
+    <!-- ENCABEZADO -->
+    <div class="d-flex flex-column flex-md-row justify-content-between align-items-md-center mb-4">
+        <div>
+            <h1 class="fw-bold mb-2">
+                <i class="fa-solid fa-cart-shopping text-primary"></i> Carrito de Compras
+            </h1>
+            <p class="text-muted mb-0">Revisa los servicios seleccionados antes de confirmar tu pedido.</p>
+        </div>
+        <div class="mt-3 mt-md-0">
+            <a href="{{ url_for('servicios') }}" class="btn btn-outline-primary rounded-pill px-4">
+                <i class="fa-solid fa-arrow-left me-2"></i> Seguir Contratando
+            </a>
+        </div>
+    </div>
+
+    {% if not carrito %}
+    <!-- CARRITO VACÍO -->
+    <div class="card border-0 shadow-sm rounded-4 text-center py-5">
+        <div class="card-body">
+            <div class="mb-4">
+                <i class="fa-solid fa-cart-shopping" style="font-size: 70px; color: #d9dee3;"></i>
+            </div>
+            <h3 class="fw-bold">Tu carrito está vacío</h3>
+            <p class="text-muted mb-4">Aún no has agregado ningún servicio a tu orden.</p>
+            <a href="{{ url_for('servicios') }}" class="btn btn-primary rounded-pill px-4 py-2">
+                <i class="fa-solid fa-magnifying-glass me-2"></i> Explorar Servicios
+            </a>
+        </div>
+    </div>
+
+    {% else %}
+    <div class="row g-4">
+
+        <!-- LISTA DE SERVICIOS -->
+        <div class="col-lg-8">
+            <div class="card border-0 shadow-sm rounded-4">
+                <div class="card-header bg-white border-0 pt-4 px-4">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <h4 class="fw-bold mb-0">
+                            <i class="fa-solid fa-list-check text-primary me-2"></i> Servicios Seleccionados
+                        </h4>
+                        <span class="badge bg-primary rounded-pill px-3 py-2">{{ carrito|length }} ítem(s)</span>
+                    </div>
+                </div>
+
+                <div class="card-body p-4">
+                    {% for item in carrito %}
+                    <div class="cart-item mb-3 p-3 rounded-3">
+                        <div class="row align-items-center">
+                            <div class="col-auto">
+                                <div class="service-icon"><i class="fa-solid fa-screwdriver-wrench"></i></div>
+                            </div>
+                            <div class="col">
+                                <h5 class="fw-bold mb-2">{{ item.titulo }}</h5>
+                                <p class="text-muted mb-1"><i class="fa-solid fa-tag me-1"></i> Servicio ObraClick</p>
+                                <small class="text-muted">
+                                    Precio unitario: <strong>${{ "%.2f"|format(item.precio) }}</strong>
+                                    &nbsp;|&nbsp;
+                                    Cantidad: <strong>{{ item.cantidad }}</strong>
+                                </small>
+                            </div>
+                            <div class="col-12 col-md-auto text-md-end mt-3 mt-md-0">
+                                <span class="d-block text-muted small">Total</span>
+                                <strong class="fs-5 text-primary">${{ "%.2f"|format(item.precio * item.cantidad) }}</strong>
+                            </div>
+                        </div>
+                    </div>
+                    {% endfor %}
+
+                    <div class="text-end mt-4">
+                        <a href="{{ url_for('vaciar_carrito') }}"
+                           class="btn btn-outline-danger rounded-pill px-4"
+                           onclick="return confirm('¿Deseas vaciar todo el carrito?');">
+                            <i class="fa-solid fa-trash me-2"></i> Vaciar Carrito
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- RESUMEN Y FACTURACIÓN -->
+        <div class="col-lg-4">
+
+            <div class="card border-0 shadow-sm rounded-4 mb-4">
+                <div class="card-body p-4">
+                    <h4 class="fw-bold mb-4">
+                        <i class="fa-solid fa-receipt text-primary me-2"></i> Resumen de Compra
+                    </h4>
+                    <div class="d-flex justify-content-between mb-3">
+                        <span class="text-muted">Subtotal</span>
+                        <strong>${{ "%.2f"|format(subtotal) }}</strong>
+                    </div>
+                    <div class="d-flex justify-content-between mb-3">
+                        <span class="text-muted">IVA (15%)</span>
+                        <strong>${{ "%.2f"|format(iva) }}</strong>
+                    </div>
+                    <hr>
+                    <div class="d-flex justify-content-between align-items-center mt-3">
+                        <span class="fw-bold fs-5">Total</span>
+                        <span class="fw-bold fs-4 text-primary">${{ "%.2f"|format(total) }}</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card border-0 shadow-sm rounded-4">
+                <div class="card-body p-4">
+                    <h4 class="fw-bold mb-4">
+                        <i class="fa-solid fa-file-invoice text-primary me-2"></i> Datos para Facturación
+                    </h4>
+
+                    <form method="POST" action="{{ url_for('procesar_compra') }}">
+
+                        <div class="mb-3">
+                            <label for="tipo_doc" class="form-label fw-semibold">Tipo Doc.</label>
+                            <select class="form-select" id="tipo_doc" name="tipo_doc" required>
+                                <option value="">Seleccionar</option>
+                                <option value="cedula">Cédula</option>
+                                <option value="ruc">RUC</option>
+                                <option value="pasaporte">Pasaporte</option>
+                            </select>
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="identificacion" class="form-label fw-semibold">Nº Identificación</label>
+                            <input type="text" class="form-control" id="identificacion" name="identificacion"
+                                   placeholder="Ingrese su identificación" required>
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="nombre" class="form-label fw-semibold">Nombre / Razón Social</label>
+                            <input type="text" class="form-control" id="nombre" name="nombre_razon"
+                                   value="{{ session.get('usuario_nombre', '') }}"
+                                   placeholder="Nombre completo o razón social" required>
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="correo" class="form-label fw-semibold">Correo Electrónico</label>
+                            <input type="email" class="form-control" id="correo" name="email"
+                                   value="{{ session.get('usuario_email', '') }}"
+                                   placeholder="ejemplo@correo.com" required>
+                        </div>
+
+                        <div class="mb-4">
+                            <label for="telefono" class="form-label fw-semibold">Teléfono</label>
+                            <input type="tel" class="form-control" id="telefono" name="telefono"
+                                   placeholder="0999999999" required>
+                        </div>
+
+                        <div class="payment-total p-3 rounded-3 mb-4">
+                            <div class="d-flex justify-content-between align-items-center">
+                                <span class="fw-semibold">Total a pagar</span>
+                                <strong class="fs-4">${{ "%.2f"|format(total) }}</strong>
+                            </div>
+                        </div>
+
+                        <button type="submit" class="btn btn-primary w-100 py-3 rounded-3 fw-bold">
+                            <i class="fa-solid fa-credit-card me-2"></i> Confirmar y Pagar
+                        </button>
+
+                        <div class="text-center mt-3">
+                            <small class="text-muted">
+                                <i class="fa-solid fa-lock me-1"></i> Tu información está protegida.
+                            </small>
+                        </div>
+                    </form>
+                </div>
+            </div>
+
+        </div>
+    </div>
+    {% endif %}
+
+</div>
+{% endblock %}

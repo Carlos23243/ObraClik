@@ -1,0 +1,89 @@
+{% extends 'base.html' %}
+
+{% block title %}ObraClick - Pedido confirmado{% endblock %}
+
+{% block head %}
+<style>
+    body { background-color: #f7f8fa; }
+    .btn-primary { background-color: #123b5d; border-color: #123b5d; }
+    .btn-primary:hover { background-color: #0d2d46; border-color: #0d2d46; }
+    .btn-outline-primary { color: #123b5d; border-color: #123b5d; }
+    .btn-outline-primary:hover { background-color: #123b5d; border-color: #123b5d; color: #fff; }
+    .text-primary { color: #123b5d !important; }
+
+    @media print {
+        nav, footer, .no-print { display: none !important; }
+        body { background: #fff; }
+        .card { box-shadow: none !important; }
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="container py-5" style="max-width: 760px;">
+
+    <div class="card border-0 shadow-sm rounded-4 p-2 p-md-4">
+        <div class="card-body">
+
+            <!-- ENCABEZADO -->
+            <div class="text-center mb-4">
+                <i class="fa-solid fa-circle-check text-success" style="font-size: 72px;"></i>
+                <h2 class="fw-bold mt-3">¡Gracias, {{ cliente }}!</h2>
+                <p class="text-muted mb-0">
+                    Tu pedido fue registrado correctamente. Enviaremos el detalle a
+                    <strong>{{ email }}</strong>.
+                </p>
+            </div>
+
+            <!-- DETALLE -->
+            <h5 class="fw-bold mb-3">
+                <i class="fa-solid fa-receipt text-primary me-2"></i> Detalle del pedido
+            </h5>
+
+            <ul class="list-group list-group-flush mb-4">
+                {% for item in items %}
+                <li class="list-group-item d-flex justify-content-between align-items-center px-0">
+                    <div>
+                        <span class="fw-semibold">{{ item.titulo }}</span>
+                        <small class="text-muted d-block">
+                            {{ item.cantidad }} × ${{ "%.2f"|format(item.precio) }}
+                        </small>
+                    </div>
+                    <strong>${{ "%.2f"|format(item.precio * item.cantidad) }}</strong>
+                </li>
+                {% endfor %}
+
+                <li class="list-group-item d-flex justify-content-between px-0">
+                    <span class="text-muted">Subtotal</span>
+                    <span>${{ "%.2f"|format(subtotal) }}</span>
+                </li>
+                <li class="list-group-item d-flex justify-content-between px-0">
+                    <span class="text-muted">IVA (15%)</span>
+                    <span>${{ "%.2f"|format(iva) }}</span>
+                </li>
+                <li class="list-group-item d-flex justify-content-between px-0">
+                    <span class="fw-bold fs-5">Total</span>
+                    <span class="fw-bold fs-5 text-primary">${{ "%.2f"|format(total) }}</span>
+                </li>
+            </ul>
+
+            <!-- ACCIONES -->
+            <div class="d-flex flex-column flex-sm-row justify-content-center gap-2 no-print">
+                <button type="button" onclick="window.print()" class="btn btn-outline-primary rounded-pill px-4">
+                    <i class="fa-solid fa-print me-2"></i> Imprimir
+                </button>
+                <a href="{{ url_for('servicios') }}" class="btn btn-primary rounded-pill px-4">
+                    <i class="fa-solid fa-magnifying-glass me-2"></i> Seguir explorando
+                </a>
+                {% if session.get('user_id') %}
+                <a href="{{ url_for('pedidos') }}" class="btn btn-outline-primary rounded-pill px-4">
+                    <i class="fa-solid fa-box me-2"></i> Mis pedidos
+                </a>
+                {% endif %}
+            </div>
+
+        </div>
+    </div>
+
+</div>
+{% endblock %}
