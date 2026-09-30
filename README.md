@@ -14,24 +14,5 @@ Panel Administrativo: Scripts y herramientas para actualizar y gestionar roles/a
 **Base de Datos:** MySQL / SQLite
 **Entorno Virtual:** Virtualenv (.venv / env)
 **Estructura del Proyecto**
-ObraClik/
-├── ObraClikweb/
-│   ├── .venv/                 # Entorno virtual
-│   ├── static/                # Archivos estáticos (CSS, JS, Imágenes)
-│   │   └── uploads/           # Recursos subidos por usuarios
-│   ├── templates/             # Plantillas HTML (Jinja2)
-│   │   ├── base.html          # Estructura principal
-│   │   ├── index.html         # Página de inicio
-│   │   ├── login.html         # Inicio de sesión
-│   │   ├── registro.html      # Registro de usuarios
-│   │   ├── servicios.html     # Catálogo de servicios
-│   │   ├── carrito.html       # Carrito de pedidos
-│   │   ├── confirmacion.html  # Confirmación de solicitud
-│   │   ├── perfil.html        # Vista general de perfil
-│   │   ├── perfil_detalle.html# Detalle y edición de perfil
-│   │   ├── pedidos.html       # Historial de pedidos
-│   │   ├── nosotros.html      # Información institucional
-│   │   └── crecimiento.html   # Estadísticas / Crecimiento
-│   ├── app.py                 # Aplicación principal Flask (Rutas y lógica)
-│   └── actualizar_admin.py   # Script auxiliar de administración
-└── README.md                  # Documentación del repositorio
+<img width="788" height="651" alt="image" src="https://github.com/user-attachments/assets/30ec2986-1eb5-439d-8bbf-b9f0986e4454" />
+
